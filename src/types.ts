@@ -1,3 +1,5 @@
+import { type Request } from "express";
+
 export interface UserCredentialsStructure {
   username: string;
   password: string;
@@ -10,4 +12,8 @@ export interface ItemsStructure {
   user: {
     $oid: string;
   };
+}
+
+export interface ItemRequest extends Request {
+  userId: string;
 }
