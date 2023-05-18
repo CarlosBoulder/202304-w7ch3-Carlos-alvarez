@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import CustomError from "../../customError/CustomError.js";
 import User from "../../../database/models/User.js";
 
-const login = async (
+export const login = async (
   req: Request<
     Record<string, unknown>,
     Record<string, unknown>,
@@ -43,4 +43,27 @@ const login = async (
   }
 };
 
-export default login;
+export const registerUser = async (
+  req: Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    { username: string; password: string }
+  >,
+  res: Response,
+  next: NextFunction
+) => {
+  const userData = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+    const user = await User.create({
+      ...userData,
+      password: hashedPassword,
+    });
+
+    res.status(201).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};
